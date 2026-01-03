@@ -1,6 +1,6 @@
 {
-  "name": "@mattermost/react-native-paste-input-example",
-  "description": "Example app for @mattermost/react-native-paste-input",
+  "name": "@tbvjaos510/react-native-paste-input-example",
+  "description": "Example app for @tbvjaos510/react-native-paste-input",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -9,16 +9,16 @@
     "start": "react-native start"
   },
   "dependencies": {
-    "@mattermost/react-native-paste-input": "file://../",
+    "@tbvjaos510/react-native-paste-input": "file://../",
     "react": "19.1.0",
-    "react-native": "0.80.0"
+    "react-native": "0.81.5"
   },
   "devDependencies": {
     "@babel/runtime": "7.26.0",
     "@react-native-community/cli": "^19.0.0",
     "@react-native-community/cli-platform-android": "^19.0.0",
     "@react-native-community/cli-platform-ios": "^19.0.0",
-    "@react-native/babel-preset": "0.80.0",
+    "@react-native/babel-preset": "0.81.5",
     "babel-plugin-module-resolver": "5.0.2"
   },
   "engines": {

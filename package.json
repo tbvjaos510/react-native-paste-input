@@ -1,6 +1,6 @@
 {
-  "name": "@mattermost/react-native-paste-input",
-  "version": "0.8.1",
+  "name": "@tbvjaos510/react-native-paste-input",
+  "version": "0.9.0",
   "description": "React Native TextInput replacement to allow pasting files",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -56,9 +56,9 @@
   },
   "devDependencies": {
     "@commitlint/config-conventional": "19.6.0",
-    "@react-native/eslint-config": "0.80.0",
-    "@react-native/metro-config": "0.80.0",
-    "@react-native/typescript-config": "0.80.0",
+    "@react-native/eslint-config": "0.81.5",
+    "@react-native/metro-config": "0.81.5",
+    "@react-native/typescript-config": "0.81.5",
     "@release-it/conventional-changelog": "9.0.3",
     "@types/react": "19.1.0",
     "@typescript-eslint/eslint-plugin": "7.14.1",
@@ -77,7 +77,7 @@
     "pod-install": "0.3.2",
     "prettier": "3.4.2",
     "react": "19.1.0",
-    "react-native": "0.80.0",
+    "react-native": "0.81.5",
     "react-native-builder-bob": "0.40.12",
     "release-it": "17.10.0",
     "typescript": "5.7.2"

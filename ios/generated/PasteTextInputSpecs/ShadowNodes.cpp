@@ -47,12 +47,11 @@ AttributedStringBox PasteTextInputShadowNode::attributedStringBoxToMeasure(
     // to measure the "hight" of the font).
     // TODO T67606511: We will redefine the measurement of empty strings as part
     // of T67606511
-    auto string = !placeholder.empty()
-        ? placeholder
-        : BaseTextShadowNode::getEmptyPlaceholder();
-    auto textAttributes = getConcreteProps().getEffectiveTextAttributes(
-        layoutContext.fontSizeMultiplier);
-    attributedString.appendFragment({string, textAttributes, {}});
+    if (!placeholder.empty()) {
+      auto textAttributes = getConcreteProps().getEffectiveTextAttributes(
+          layoutContext.fontSizeMultiplier);
+      attributedString.appendFragment({placeholder, textAttributes, {}});
+    }
   }
 
   return AttributedStringBox{attributedString};
