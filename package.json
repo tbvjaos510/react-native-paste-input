@@ -44,13 +44,16 @@
     "paste",
     "text-input"
   ],
-  "repository": "https://github.com/mattermost/react-native-paste-input",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tbvjaos510/react-native-paste-input"
+  },
   "author": "Elias Nahum <nahumhbl@gmail.com> (https://github.com/mattermost)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mattermost/react-native-paste-input/issues"
+    "url": "https://github.com/tbvjaos510/react-native-paste-input/issues"
   },
-  "homepage": "https://github.com/mattermost/react-native-paste-input#readme",
+  "homepage": "https://github.com/tbvjaos510/react-native-paste-input#readme",
   "dependencies": {
     "semver": "7.6.3"
   },
