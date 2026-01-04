@@ -17,8 +17,14 @@
 #import "RCTTextInputUtils.h"
 
 #import "RCTFabricComponentsPlugins.h"
+#import <React/RCTComponentViewFactory.h>
 
 using namespace facebook::react;
+
+// Register the component with Fabric's component registry
+__attribute__((constructor)) static void registerPasteTextInput() {
+    [RCTComponentViewFactory.currentComponentViewFactory registerComponentViewClass:[PasteTextInput class]];
+}
 
 @interface PasteTextInput () <RCTBackedTextInputDelegate, RCTPasteTextInputViewProtocol>
 @end
@@ -86,18 +92,20 @@ std::int32_t convertNSDictionaryValueToStdInt(NSDictionary *dictionary, NSString
     if (self = [super initWithFrame:frame]) {
         static const auto defaultProps = std::make_shared<const PasteTextInputProps>();
         _props = defaultProps;
-        
+
         _backedTextInputView = [[PasteInputTextView alloc] initWithFrame:self.bounds];
         _backedTextInputView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _backedTextInputView.textInputDelegate = self;
+        _backedTextInputView.editable = YES;
+        _backedTextInputView.userInteractionEnabled = YES;
         [self _setOnPaste];
         _ignoreNextTextInputCall = NO;
         _comingFromJS = NO;
         _didMoveToWindow = NO;
-        
+
         [self addSubview:_backedTextInputView];
     }
-    
+
     return self;
 }
 
@@ -201,11 +209,13 @@ std::int32_t convertNSDictionaryValueToStdInt(NSDictionary *dictionary, NSString
   // because they are being checked on-demand.
 
 //   Other props:
-  if (newTextInputProps.placeholder != oldTextInputProps.placeholder) {
+  if (newTextInputProps.placeholder != oldTextInputProps.placeholder ||
+      (!newTextInputProps.placeholder.empty() && _backedTextInputView.placeholder.length == 0)) {
     _backedTextInputView.placeholder = RCTNSStringFromString(newTextInputProps.placeholder);
   }
 
-  if (newTextInputProps.placeholderTextColor != oldTextInputProps.placeholderTextColor) {
+  if (newTextInputProps.placeholderTextColor != oldTextInputProps.placeholderTextColor ||
+      (newTextInputProps.placeholderTextColor && !_backedTextInputView.placeholderColor)) {
     _backedTextInputView.placeholderColor = RCTUIColorFromSharedColor(newTextInputProps.placeholderTextColor);
   }
 

@@ -6,8 +6,12 @@ module.exports = {
         platforms: {
             android: {
                 sourceDir: './android',
-                cmakeListsPath: 'generated/jni/CMakeLists.txt',
+                // cmakeListsPath removed - using ViewManager-only approach without C++ ShadowNode
+                cxxModuleCMakeListsPath: null,
+                componentDescriptorsCMakeListsPath: null,
             },
         },
     },
+    // Disable codegen for Android to avoid C++ compatibility issues
+    codegenConfig: null,
 };

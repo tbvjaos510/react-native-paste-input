@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@mattermost/react-native-paste-input": ["./src/index"]
+      "@tbvjaos510/react-native-paste-input": ["./src/index"]
     },
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,
@@ -25,6 +25,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "esnext",
+    "target": "esnext"
   },
+  "exclude": ["example", "lib", "node_modules"]
 }

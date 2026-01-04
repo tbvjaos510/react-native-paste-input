@@ -17,81 +17,23 @@
 #ifdef RCT_NEW_ARCH_ENABLED
 @interface PasteTextInputManager : RCTViewManager
 @end
-#else
-#import <React/RCTMultilineTextInputViewManager.h>
 
-@interface PasteTextInputManager : RCTMultilineTextInputViewManager
-
-@end
-#endif
-
-@implementation PasteTextInputManager {
-    NSHashTable<RCTBaseTextInputShadowView *> *_shadowViews;
-}
+@implementation PasteTextInputManager
 
 RCT_EXPORT_MODULE(PasteTextInput)
 
-RCT_EXPORT_VIEW_PROPERTY(disableCopyPaste, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(smartPunctuation, NSString)
-
-RCT_EXPORT_VIEW_PROPERTY(onPaste, RCTBubblingEventBlock)
-
-#pragma mark - Unified <PasteTextInput> properties
-#ifdef RCT_NEW_ARCH_ENABLED
-RCT_REMAP_VIEW_PROPERTY(autoCapitalize, backedTextInputView.autocapitalizationType, UITextAutocapitalizationType)
-RCT_REMAP_VIEW_PROPERTY(autoCorrect, backedTextInputView.autocorrectionType, UITextAutocorrectionType)
-RCT_REMAP_VIEW_PROPERTY(contextMenuHidden, backedTextInputView.contextMenuHidden, BOOL)
-RCT_REMAP_VIEW_PROPERTY(editable, backedTextInputView.editable, BOOL)
-RCT_REMAP_VIEW_PROPERTY(enablesReturnKeyAutomatically, backedTextInputView.enablesReturnKeyAutomatically, BOOL)
-RCT_REMAP_VIEW_PROPERTY(keyboardAppearance, backedTextInputView.keyboardAppearance, UIKeyboardAppearance)
-RCT_REMAP_VIEW_PROPERTY(placeholder, backedTextInputView.placeholder, NSString)
-RCT_REMAP_VIEW_PROPERTY(placeholderTextColor, backedTextInputView.placeholderColor, UIColor)
-RCT_REMAP_VIEW_PROPERTY(returnKeyType, backedTextInputView.returnKeyType, UIReturnKeyType)
-RCT_REMAP_VIEW_PROPERTY(selectionColor, backedTextInputView.tintColor, UIColor)
-RCT_REMAP_VIEW_PROPERTY(spellCheck, backedTextInputView.spellCheckingType, UITextSpellCheckingType)
-RCT_REMAP_VIEW_PROPERTY(caretHidden, backedTextInputView.caretHidden, BOOL)
-RCT_REMAP_VIEW_PROPERTY(clearButtonMode, backedTextInputView.clearButtonMode, UITextFieldViewMode)
-RCT_REMAP_VIEW_PROPERTY(scrollEnabled, backedTextInputView.scrollEnabled, BOOL)
-RCT_REMAP_VIEW_PROPERTY(secureTextEntry, backedTextInputView.secureTextEntry, BOOL)
-RCT_REMAP_VIEW_PROPERTY(smartInsertDelete, backedTextInputView.smartInsertDeleteType, UITextSmartInsertDeleteType)
-RCT_EXPORT_VIEW_PROPERTY(autoFocus, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(submitBehavior, NSString)
-RCT_EXPORT_VIEW_PROPERTY(clearTextOnFocus, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(keyboardType, UIKeyboardType)
-RCT_EXPORT_VIEW_PROPERTY(showSoftInputOnFocus, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(maxLength, NSNumber)
-RCT_EXPORT_VIEW_PROPERTY(selectTextOnFocus, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(selection, RCTTextSelection)
-RCT_EXPORT_VIEW_PROPERTY(inputAccessoryViewID, NSString)
-RCT_EXPORT_VIEW_PROPERTY(textContentType, NSString)
-RCT_EXPORT_VIEW_PROPERTY(passwordRules, NSString)
-
-RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock)
+// Export TextInput events for Fabric Paper interop
+// These are inherited from TextInputEventEmitter in native code
+RCT_EXPORT_VIEW_PROPERTY(onContentSizeChange, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onSelectionChange, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onScroll, RCTDirectEventBlock)
-
-RCT_EXPORT_VIEW_PROPERTY(mostRecentEventCount, NSInteger)
-
-RCT_EXPORT_SHADOW_PROPERTY(text, NSString)
-RCT_EXPORT_SHADOW_PROPERTY(placeholder, NSString)
-RCT_EXPORT_SHADOW_PROPERTY(onContentSizeChange, RCTDirectEventBlock)
-
-RCT_CUSTOM_VIEW_PROPERTY(multiline, BOOL, UIView)
-{
-  // No op.
-  // This View Manager doesn't use this prop but it must be exposed here via ViewConfig to enable Fabric component use
-  // it.
-}
-
-- (RCTShadowView *)shadowView
-{
-  RCTBaseTextInputShadowView *shadowView = [[RCTBaseTextInputShadowView alloc] initWithBridge:self.bridge];
-  shadowView.textAttributes.fontSizeMultiplier =
-      [[[self.bridge moduleForName:@"AccessibilityManager"
-             lazilyLoadIfNecessary:YES] valueForKey:@"multiplier"] floatValue];
-  [_shadowViews addObject:shadowView];
-  return shadowView;
-}
+RCT_EXPORT_VIEW_PROPERTY(onBlur, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onFocus, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onEndEditing, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onSubmitEditing, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onKeyPress, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onChange, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPaste, RCTBubblingEventBlock)
 
 RCT_EXPORT_METHOD(focus : (nonnull NSNumber *)viewTag)
 {
@@ -136,36 +78,29 @@ RCT_EXPORT_METHOD(setTextAndSelection
   }];
 }
 
-#pragma mark - RCTUIManagerObserver
+// Note: For Fabric, the -view method is NOT needed.
+// The PasteTextInput component is created via PasteTextInputCls() in PasteTextInput.mm
 
-- (void)uiManagerWillPerformMounting:(__unused RCTUIManager *)uiManager
-{
-  for (RCTBaseTextInputShadowView *shadowView in _shadowViews) {
-    [shadowView uiManagerWillPerformMounting];
-  }
-}
+@end
 
-#pragma mark - Font Size Multiplier
-
-- (void)handleDidUpdateMultiplierNotification
-{
-  CGFloat fontSizeMultiplier =
-      [[[self.bridge moduleForName:@"AccessibilityManager"] valueForKey:@"multiplier"] floatValue];
-
-  NSHashTable<RCTBaseTextInputShadowView *> *shadowViews = _shadowViews;
-  RCTExecuteOnUIManagerQueue(^{
-    for (RCTBaseTextInputShadowView *shadowView in shadowViews) {
-      shadowView.textAttributes.fontSizeMultiplier = fontSizeMultiplier;
-      [shadowView dirtyLayout];
-    }
-
-    [self.bridge.uiManager setNeedsLayout];
-  });
-}
 #else
+#import <React/RCTMultilineTextInputViewManager.h>
+
+@interface PasteTextInputManager : RCTMultilineTextInputViewManager
+@end
+
+@implementation PasteTextInputManager
+
+RCT_EXPORT_MODULE(PasteTextInput)
+
+RCT_EXPORT_VIEW_PROPERTY(disableCopyPaste, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(smartPunctuation, NSString)
+RCT_EXPORT_VIEW_PROPERTY(onPaste, RCTBubblingEventBlock)
+
 - (UIView *)view
 {
   return [[PasteInputView alloc] initWithBridge:self.bridge];
 }
-#endif
+
 @end
+#endif

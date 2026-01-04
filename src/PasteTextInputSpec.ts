@@ -2,6 +2,9 @@ import {
     type ColorValue,
     type HostComponent,
     type ViewProps,
+    requireNativeComponent,
+    UIManager,
+    findNodeHandle,
 } from 'react-native';
 import type {
     BubblingEventHandler,
@@ -11,8 +14,6 @@ import type {
     Int32,
     WithDefault,
 } from 'react-native/Libraries/Types/CodegenTypes';
-import { codegenNativeComponent } from 'react-native';
-import { codegenNativeCommands } from 'react-native';
 
 export interface PasteTextInputPasteEventData {
     data: Readonly<
@@ -262,16 +263,42 @@ interface NativeCommands {
     readonly setTextAndSelection: (
         viewRef: React.ElementRef<PasteTextInputNativeComponentType>,
         mostRecentEventCount: Int32,
-        value: string | null | undefined, // in theory this is nullable
+        value: string | null | undefined,
         start: Int32,
         end: Int32
     ) => void;
 }
 
-export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
-    supportedCommands: ['focus', 'blur', 'setTextAndSelection'],
-});
+// Paper interop: Use UIManager commands instead of codegen commands
+const PasteTextInputCommands: NativeCommands = {
+    focus: (viewRef) => {
+        const handle = findNodeHandle(viewRef);
+        if (handle != null) {
+            UIManager.dispatchViewManagerCommand(handle, 'focus', []);
+        }
+    },
+    blur: (viewRef) => {
+        const handle = findNodeHandle(viewRef);
+        if (handle != null) {
+            UIManager.dispatchViewManagerCommand(handle, 'blur', []);
+        }
+    },
+    setTextAndSelection: (viewRef, mostRecentEventCount, value, start, end) => {
+        const handle = findNodeHandle(viewRef);
+        if (handle != null) {
+            UIManager.dispatchViewManagerCommand(
+                handle,
+                'setTextAndSelection',
+                [mostRecentEventCount, value, start, end]
+            );
+        }
+    },
+};
 
-export default codegenNativeComponent<NativeProps>(
+// Re-export as Commands for compatibility
+export { PasteTextInputCommands as Commands };
+
+// Paper interop: Use requireNativeComponent instead of codegenNativeComponent
+export default requireNativeComponent<NativeProps>(
     'PasteTextInput'
 ) as HostComponent<NativeProps>;

@@ -16,10 +16,18 @@ Pod::Spec.new do |s|
   s.source_files = "ios/**/*.{h,m,mm,swift,cpp}"
   s.private_header_files = "ios/**/*.h"
 
-  install_modules_dependencies(s)
-
-  # RN 0.81+ iOS-specific headers are under platform/ios/
+  # Header search paths for React Native internal headers
   s.pod_target_xcconfig = {
-    "HEADER_SEARCH_PATHS" => "$(inherited) \"$(PODS_ROOT)/Headers/Public/React-Fabric/react/renderer/components/textinput/platform/ios\""
+    "HEADER_SEARCH_PATHS" => [
+      "\"$(PODS_ROOT)/../../node_modules/react-native/ReactCommon\"",
+      "\"$(PODS_ROOT)/../../node_modules/react-native/ReactCommon/react/renderer/components/textinput\"",
+      "\"$(PODS_ROOT)/../../node_modules/react-native/ReactCommon/react/renderer/components/textinput/platform/ios\"",
+      "\"$(PODS_ROOT)/../../node_modules/react-native/ReactCommon/react/renderer/components/text\"",
+      "\"$(PODS_ROOT)/../../node_modules/react-native/ReactCommon/react/renderer/textlayoutmanager\"",
+      "\"$(PODS_ROOT)/../../node_modules/react-native/ReactCommon/react/renderer/textlayoutmanager/platform/ios\"",
+      "\"$(PODS_ROOT)/../../node_modules/react-native/ReactCommon/react/renderer/components/view\"",
+    ].join(" ")
   }
+
+  install_modules_dependencies(s)
 end

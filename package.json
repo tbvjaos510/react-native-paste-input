@@ -1,6 +1,6 @@
 {
   "name": "@tbvjaos510/react-native-paste-input",
-  "version": "0.9.5",
+  "version": "0.10.0",
   "description": "React Native TextInput replacement to allow pasting files",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -108,7 +108,7 @@
       "tagName": "v${version}"
     },
     "npm": {
-      "publish": false
+      "publish": true
     },
     "github": {
       "release": true

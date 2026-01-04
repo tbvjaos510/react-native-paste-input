@@ -1,7 +1,5 @@
 import * as React from 'react';
-import PasteTextInputNativeComponent, {
-    Commands,
-} from './PasteTextInputNativeComponent';
+import PasteTextInputNativeComponent, { Commands } from './PasteTextInputSpec';
 import type {
     PasteEvent,
     PasteInputProps,
