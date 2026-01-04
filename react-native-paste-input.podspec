@@ -20,6 +20,6 @@ Pod::Spec.new do |s|
 
   # RN 0.81+ iOS-specific headers are under platform/ios/
   s.pod_target_xcconfig = {
-    "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/Headers/Public/React-Fabric/react/renderer/components/textinput/platform/ios\""
+    "HEADER_SEARCH_PATHS" => "$(inherited) \"$(PODS_ROOT)/Headers/Public/React-Fabric/react/renderer/components/textinput/platform/ios\""
   }
 end
