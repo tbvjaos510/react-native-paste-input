@@ -14,7 +14,7 @@
 #include "Props.h"
 #include "States.h"
 #include <react/renderer/attributedstring/AttributedString.h>
-#include <react/renderer/components/iostextinput/TextInputState.h>
+#include <react/renderer/components/textinput/TextInputState.h>
 #include <react/renderer/components/text/BaseTextShadowNode.h>
 #include <react/renderer/components/view/ConcreteViewShadowNode.h>
 #include <react/renderer/textlayoutmanager/TextLayoutManager.h>
