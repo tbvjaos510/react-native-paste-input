@@ -18,8 +18,7 @@ buildscript {
 
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
-
-apply plugin: "com.facebook.react"
+// NOT using com.facebook.react plugin - this is a Paper-only component using interop
 
 def getExtOrIntegerDefault(name) {
   return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["TestItOut_" + name]).toInteger()
@@ -33,11 +32,6 @@ android {
   defaultConfig {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
-      externalNativeBuild {
-          cmake {
-              cppFlags '-DBUILD_DEBUG'
-          }
-      }
   }
 
   buildFeatures {
@@ -59,21 +53,8 @@ android {
     targetCompatibility JavaVersion.VERSION_1_8
   }
 
-  sourceSets {
-    main {
-      java.srcDirs += [
-        "generated/java",
-        "generated/jni"
-      ]
-    }
-  }
-
-  externalNativeBuild {
-    cmake {
-        path file('generated/jni/CMakeLists.txt')
-        version '3.22.1'
-    }
-  }
+  // Note: Codegen generates Java delegate files at build time
+  // sourceSets not needed as codegen output is automatically included
 }
 
 def kotlin_version = getExtOrDefault("kotlinVersion")
@@ -85,10 +66,7 @@ repositories {
 
 dependencies {
   implementation 'com.facebook.react:react-native:+'
+  implementation 'androidx.core:core-ktx:1.12.0'
 }
 
-react {
-  jsRootDir = file("../src/")
-  libraryName = "react-native-paste-input"
-  codegenJavaPackageName = "com.mattermost.pastetextinput"
-}
+// No react {} block - using Paper interop mode instead of Fabric codegen

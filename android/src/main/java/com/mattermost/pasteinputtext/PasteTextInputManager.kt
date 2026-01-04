@@ -1,6 +1,7 @@
 package com.mattermost.pasteinputtext
 
 import android.text.InputType
+import androidx.core.view.ViewCompat
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.common.MapBuilder
@@ -51,6 +52,38 @@ class PasteTextInputManager(context: ReactApplicationContext) : ReactTextInputMa
     val pasteInputEditText = editText as PasteInputEditText
     val eventDispatcher = getEventDispatcher(reactContext, editText)
     pasteInputEditText.setOnPasteListener(PasteInputListener(pasteInputEditText, reactContext.surfaceId), eventDispatcher)
+
+    // Set up OnReceiveContentListener for unified content handling (drag & drop, etc.)
+    setupOnReceiveContentListener(pasteInputEditText, eventDispatcher)
+  }
+
+  private fun setupOnReceiveContentListener(
+    editText: PasteInputEditText,
+    eventDispatcher: EventDispatcher?
+  ) {
+    val mimeTypes = arrayOf("image/*")
+
+    ViewCompat.setOnReceiveContentListener(
+      editText,
+      mimeTypes,
+      androidx.core.view.OnReceiveContentListener { _, payload ->
+        val clip = payload.clip
+        val description = clip.description
+
+        if (description != null && description.hasMimeType("image/*")) {
+          for (i in 0 until clip.itemCount) {
+            val item = clip.getItemAt(i)
+            val uri = item.uri
+            if (uri != null) {
+              editText.getOnPasteListener().onPaste(uri, eventDispatcher)
+            }
+          }
+          null
+        } else {
+          payload
+        }
+      }
+    )
   }
 
   override fun getExportedCustomBubblingEventTypeConstants(): MutableMap<String, Any> {

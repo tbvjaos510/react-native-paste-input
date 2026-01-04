@@ -13,12 +13,10 @@ class PasteInputActionCallback(editText: PasteInputEditText, disabled: Boolean, 
   private val mEditText = editText
   private val mEventDispatcher = eventDispatcher
 
-
   override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
     if (isDisabled) {
       disableMenus(menu)
     }
-
     return true
   }
 
@@ -34,12 +32,10 @@ class PasteInputActionCallback(editText: PasteInputEditText, disabled: Boolean, 
     } else {
       mEditText.onTextContextMenuItem(item!!.itemId)
     }
-
     return true
   }
 
   override fun onDestroyActionMode(mode: ActionMode?) {
-
   }
 
   private fun disableMenus(menu: Menu?) {
@@ -61,12 +57,17 @@ class PasteInputActionCallback(editText: PasteInputEditText, disabled: Boolean, 
     val clipboardManager = mEditText.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clipData = clipboardManager.primaryClip ?: return null
     val item = clipData.getItemAt(0) ?: return null
-    val chars = item.text ?: return null
 
-    val text = chars.toString()
-    return if (text.isNotEmpty()) {
-      null
-    } else item.uri
+    // Check for URI first (for images)
+    val uri = item.uri
+    if (uri != null) {
+      return uri
+    }
 
+    // If no URI, check if it's text content
+    val chars = item.text
+    return if (chars != null && chars.toString().isNotEmpty()) {
+      null  // It's text, not an image
+    } else null
   }
 }

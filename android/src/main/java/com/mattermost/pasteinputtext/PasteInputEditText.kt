@@ -9,7 +9,6 @@ import androidx.core.view.inputmethod.InputConnectionCompat
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.EventDispatcher
 import com.facebook.react.views.textinput.ReactEditText
-import java.lang.Exception
 
 
 @SuppressLint("ViewConstructor")
@@ -42,7 +41,7 @@ class PasteInputEditText(context: ThemedReactContext) : ReactEditText(context) {
       val lacksPermission = (flags and InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION) != 0
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && lacksPermission) {
         try {
-            inputContentInfo.requestPermission()
+          inputContentInfo.requestPermission()
         } catch (e: Exception) {
           return@OnCommitContentListener false
         }
